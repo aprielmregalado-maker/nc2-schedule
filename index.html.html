@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NC II Assessment Schedule Lookup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between">
+
+    <div class="max-w-3xl w-full mx-auto p-6 mt-10">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-slate-800">NC II Assessment Schedule</h1>
+            <p class="text-slate-600 mt-2">Enter your name or student number below to check your assessment date and section.</p>
+        </div>
+
+        <!-- Search Card -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="e.g., Dela Cruz or 2023-00123" 
+                    class="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-slate-700"
+                >
+                <button 
+                    onclick="searchSchedule()" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition duration-200 shadow-sm"
+                >
+                    Search Schedule
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsContainer" class="space-y-4">
+            <!-- Dynamic results will appear here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-slate-500 text-sm">
+        &copy; 2026 Assessment Coordinating Committee. All rights reserved.
+    </footer>
+
+    <script>
+        // Embedded dataset derived from the cleaned assessment schedule records
+        const studentsData = [
+            { id: "1", name: "SAMPLE STUDENT 1", section: "FB-HE12-01", date: "October 24, 2026" },
+            { id: "2", name: "SAMPLE STUDENT 2", section: "FB-HE12-01", date: "October 24, 2026" },
+            { id: "3", name: "SAMPLE STUDENT 3", section: "FB-HE12-02", date: "October 25, 2026" },
+            { id: "4", name: "SAMPLE STUDENT 4", section: "FB-HE12-03", date: "October 26, 2026" }
+            // Add remaining student records here as needed
+        ];
+
+        function searchSchedule() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = '';
+
+            if (!query) {
+                container.innerHTML = `
+                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg text-amber-700">
+                        Please enter a student name or number to search.
+                    </div>
+                `;
+                return;
+            }
+
+            const matches = studentsData.filter(student => 
+                student.name.toLowerCase().includes(query) || 
+                student.id.toLowerCase().includes(query)
+            );
+
+            if (matches.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-rose-50 border-l-4 border-rose-400 p-4 rounded-r-lg text-rose-700">
+                        No records found matching "${query}". Please check your spelling or contact your section adviser.
+                    </div>
+                `;
+                return;
+            }
+
+            matches.forEach(student => {
+                container.innerHTML += `
+                    <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-600">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800">${student.name}</h3>
+                                <p class="text-slate-500 text-sm mt-1">Section: <span class="font-medium text-slate-700">${student.section}</span> | ID: <span class="font-medium text-slate-700">${student.id}</span></p>
+                            </div>
+                            <div class="mt-4 sm:mt-0 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg font-semibold text-sm">
+                                Assessment Date: ${student.date}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Allow pressing Enter to search
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                searchSchedule();
+            }
+        });
+    </script>
+</body>
+</html>
